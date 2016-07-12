@@ -2,7 +2,7 @@
 
 import base64
 import BaseHTTPServer, SocketServer
-import cv
+import cv2
 import logging
 import mimetypes
 import numpy as np
@@ -156,7 +156,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		frame = 45 / (frame * -0.0030711016 + 3.3309495161) - 45
 		np.clip(frame, 0, 255, frame)
 		frame = frame.astype(np.uint8)
-		im = Image.fromstring("L", (frame.shape[1], frame.shape[0]), frame.tostring())
+		im = Image.frombytes("L", (frame.shape[1], frame.shape[0]), frame.tostring())
 		im = im.resize((480, 360), Image.BILINEAR)
 		im.putpalette(color_palette)
 		im = im.convert("RGB")
@@ -166,7 +166,7 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 		return im
 
 	def video_to_image(self, frame):
-		im = Image.fromstring("RGB", (frame.shape[1], frame.shape[0]), frame.tostring())
+		im = Image.frombytes("RGB", (frame.shape[1], frame.shape[0]), frame.tostring())
 		im = ImageOps.equalize(im)
 		return im.resize((480, 360), Image.BILINEAR)
 
